@@ -8,6 +8,7 @@ export default defineConfig({
     alias: [
       { find: '@components', replacement: '/src/components' },
       { find: '@constants', replacement: '/src/constants' },
+      { find: '@hooks', replacement: '/src/hooks' },
     ],
   },
   cacheDir: './.vite',
