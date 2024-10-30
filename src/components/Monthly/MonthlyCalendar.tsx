@@ -1,19 +1,65 @@
-import { DateTime } from 'luxon';
-import { CalendarProps } from '@constants/interfaces';
+import { useState, useEffect } from 'react';
+import { DateTime, Interval } from 'luxon';
+import { CalendarProps, EventInput } from '@constants/interfaces';
 import { CalendarHeader } from '@components/Header';
 import DayCell from './DayCell';
 import * as S from './MonthlyCalendar.style';
 
 const MonthlyCalendar = ({
   month = DateTime.now().month,
+  events: monthlyEvents,
   width = '100%',
   height = '100%',
   firstDay = 7,
+  order = ['-allDay', 'start'],
 }: CalendarProps) => {
-  const startOfMonth = DateTime.fromObject({ month });
+  const [splitedEventMap, setSplitedEventMap] = useState<Map<string, EventInput[]>>(new Map());
+  const startOfMonth = DateTime.fromObject({ month }) as DateTime<true>;
   const startOfMonthView =
     startOfMonth.weekday === firstDay ? startOfMonth : startOfMonth.set({ weekday: firstDay }).minus({ weeks: 1 });
   const daysOfMonthView = Array.from({ length: 42 }, (_, i) => startOfMonthView.plus({ days: i }));
+
+  const compareDates = (a: EventInput, b: EventInput) => {
+    return DateTime.fromISO(a.start).toMillis() - DateTime.fromISO(b.start).toMillis();
+  };
+
+  const groupByDate = (events: EventInput[]) => {
+    const eventMap = new Map<string, EventInput[]>();
+    events.forEach(event => {
+      const date = DateTime.fromISO(event.start).toISODate();
+      if (!date) return;
+      eventMap.set(date, eventMap.has(date) ? [...eventMap.get(date)!, event] : [event]);
+    });
+    return eventMap;
+  };
+
+  const sortByOrder = (eventMap: Map<string, EventInput[]>) => {
+    return !order.length
+      ? eventMap
+      : new Map(Array.from(eventMap.entries()).map(([key, value]) => [key, value.sort(compareOrder(0))]));
+  };
+
+  const compareOrder =
+    (index: number) =>
+    (a: EventInput, b: EventInput): number => {
+      const desc = order[index][0] === '-';
+      const key = order[index].replace('-', '') as keyof EventInput;
+      const av = key === 'start' || key === 'end' ? DateTime.fromISO(a[key]) : a[key];
+      const bv = key === 'start' || key === 'end' ? DateTime.fromISO(b[key]) : b[key];
+      if (av === bv) return order[index + 1] ? compareOrder(index + 1)(a, b) : 0;
+      if (av === undefined) return 1;
+      if (bv === undefined) return -1;
+      if (av > bv) return desc ? -1 : 1;
+      return desc ? 1 : -1;
+    };
+
+  useEffect(() => {
+    // TODO: 달력에 보이는 일정만 정렬
+    const sortedByDate = monthlyEvents.sort(compareDates);
+    const groupedMapByDate = groupByDate(sortedByDate);
+    const sortedMapByOrder = sortByOrder(groupedMapByDate);
+    setSplitedEventMap(sortedMapByOrder);
+  }, [monthlyEvents]);
 
   return (
     <S.MonthlyCalendarContainer className="evd-monthly-calendar" width={width} height={height}>
