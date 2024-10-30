@@ -58,6 +58,22 @@ const MonthlyCalendar = ({
     const sortedByDate = monthlyEvents.sort(compareDates);
     const groupedMapByDate = groupByDate(sortedByDate);
     const sortedMapByOrder = sortByOrder(groupedMapByDate);
+    Array.from(sortedMapByOrder.values()).forEach(events => {
+      events.forEach((event, index) => {
+        const days = Interval.fromISO([event.start, event.end].join('/')).count('days');
+        if (days < 2) return;
+        Array.from({ length: days - 1 }).forEach((_, i) => {
+          const start = DateTime.fromISO(event.start)
+            .plus({ days: i + 1 })
+            .toISODate();
+          if (!start) return;
+          const target = sortedMapByOrder.get(start) ?? [];
+          const copied = target.length < index ? target.concat(Array(index).fill(null)).slice() : target.slice();
+          copied.splice(index, 0, event);
+          sortedMapByOrder.set(start, copied);
+        });
+      });
+    });
     setSplitedEventMap(sortedMapByOrder);
   }, [monthlyEvents]);
 
