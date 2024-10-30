@@ -83,8 +83,14 @@ const MonthlyCalendar = ({
       <S.CellContainer className="evd-day-cell-container">
         {Array.from({ length: Math.ceil(daysOfMonthView.length / 7) }).map((_, i) => (
           <S.DayCellRow key={`week-${i}`} className="evd-day-cell-row">
-            {daysOfMonthView.slice(i * 7, (i + 1) * 7).map(date => (
-              <DayCell key={date.toISODate()} month={month} date={date} />
+            {daysOfMonthView.slice(i * 7, (i + 1) * 7).map((date, index) => (
+              <DayCell
+                key={date.toISODate()}
+                month={month}
+                date={date}
+                events={splitedEventMap.get(date.toISODate()) ?? []}
+                index={index}
+              />
             ))}
           </S.DayCellRow>
         ))}

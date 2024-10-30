@@ -97,3 +97,9 @@ button:focus-visible {
   font-weight: 300;
   src: url('./assets/fonts/SpoqaHanSansNeo-Light.ttf');
 }
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}

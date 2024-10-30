@@ -16,15 +16,13 @@ export const CellContainer = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  overflow-y: auto;
 `;
 
 export const DayCellRow = styled.div`
   display: flex;
+  flex-shrink: 0;
   width: 100%;
-  height: 100%;
-  :last-of-type {
-    > div {
-      border-bottom: none;
-    }
-  }
+  height: calc(100% / 6);
+  border-bottom: 1px solid ${({ theme }) => theme.color.gray[200]};
 `;

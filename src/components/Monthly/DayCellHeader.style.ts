@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 
 export const DayCellHeaderWrapper = styled.div<{ $isToday: boolean }>`
   display: flex;
+  flex-shrink: 0;
   width: 100%;
   height: 44px;
   padding: 0 16px;
