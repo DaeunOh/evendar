@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { DateTime, Interval } from 'luxon';
 import { CalendarProps, EventInput } from '@constants/interfaces';
 import { CalendarHeader } from '@components/Header';
@@ -12,8 +12,12 @@ const MonthlyCalendar = ({
   height = '100%',
   firstDay = 7,
   order = ['-allDay', 'start'],
+  eventHeight = 22,
+  maxEvents,
 }: CalendarProps) => {
   const [splitedEventMap, setSplitedEventMap] = useState<Map<string, EventInput[]>>(new Map());
+  const [maxEventCount, setMaxEventCount] = useState(maxEvents ?? 0);
+  const rowRef = useRef<HTMLDivElement>(null);
   const startOfMonth = DateTime.fromObject({ month }) as DateTime<true>;
   const startOfMonthView =
     startOfMonth.weekday === firstDay ? startOfMonth : startOfMonth.set({ weekday: firstDay }).minus({ weeks: 1 });
@@ -53,6 +57,14 @@ const MonthlyCalendar = ({
       return desc ? 1 : -1;
     };
 
+  const handleResize = () => {
+    if (maxEvents !== undefined || !rowRef.current) return;
+    const headerHeight = 44;
+    const eventMarginBottom = 2;
+    const count = Math.floor((rowRef.current.offsetHeight - headerHeight) / (eventHeight + eventMarginBottom));
+    setMaxEventCount(Math.max(0, count));
+  };
+
   useEffect(() => {
     // TODO: 달력에 보이는 일정만 정렬
     const sortedByDate = monthlyEvents.sort(compareDates);
@@ -77,12 +89,18 @@ const MonthlyCalendar = ({
     setSplitedEventMap(sortedMapByOrder);
   }, [monthlyEvents]);
 
+  useEffect(() => {
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <S.MonthlyCalendarContainer className="evd-monthly-calendar" width={width} height={height}>
       <CalendarHeader firstDay={firstDay} />
       <S.CellContainer className="evd-day-cell-container">
         {Array.from({ length: Math.ceil(daysOfMonthView.length / 7) }).map((_, i) => (
-          <S.DayCellRow key={`week-${i}`} className="evd-day-cell-row">
+          <S.DayCellRow key={`week-${i}`} className="evd-day-cell-row" ref={rowRef}>
             {daysOfMonthView.slice(i * 7, (i + 1) * 7).map((date, index) => (
               <DayCell
                 key={date.toISODate()}
@@ -90,6 +108,8 @@ const MonthlyCalendar = ({
                 date={date}
                 events={splitedEventMap.get(date.toISODate()) ?? []}
                 index={index}
+                eventHeight={eventHeight}
+                maxEvents={maxEventCount}
               />
             ))}
           </S.DayCellRow>

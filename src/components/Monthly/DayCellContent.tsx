@@ -10,24 +10,29 @@ const DayCellContent = ({
   onEventClick,
   onEventDblClick,
   index,
+  eventHeight,
+  maxEvents,
 }: Omit<DayCellProps, 'month' | 'onDateClick' | 'onDateDblClick'>) => {
   const { onClick, onDoubleClick } = useDoubleClick({ onClick: onEventClick, onDoubleClick: onEventDblClick });
 
   return (
     <S.DayCellContentContainer>
-      {events.map((event, eventIndex) =>
-        DateTime.fromISO(event?.start).hasSame(date, 'day') || index === 0 ? (
-          <EventBar
-            key={`${date.toISODate()}-${eventIndex}`}
-            date={date}
-            dateIndex={index}
-            event={event}
-            onClick={onClick}
-            onDoubleClick={onDoubleClick}
-            index={eventIndex}
-          />
-        ) : null,
-      )}
+      {events
+        .slice(0, maxEvents)
+        .map((event, eventIndex) =>
+          DateTime.fromISO(event?.start).hasSame(date, 'day') || index === 0 ? (
+            <EventBar
+              key={`${date.toISODate()}-${eventIndex}`}
+              date={date}
+              dateIndex={index}
+              event={event}
+              onClick={onClick}
+              onDoubleClick={onDoubleClick}
+              index={eventIndex}
+              eventHeight={eventHeight}
+            />
+          ) : null,
+        )}
     </S.DayCellContentContainer>
   );
 };

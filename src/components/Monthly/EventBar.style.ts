@@ -1,11 +1,10 @@
 import styled from '@emotion/styled';
 
-export const EventBarWrapper = styled.div<{ $days: number; $index: number; $color?: string }>`
+export const EventBarWrapper = styled.div<{ $days: number; $height: number; $index: number; $color?: string }>`
   display: flex;
-  width: ${({ $days }) => `calc(${$days}00% - 2px + ${$days - 1}px)`};
-  height: 22px;
   position: absolute;
-  font-size: 24px;
+  width: ${({ $days }) => `calc(${$days}00% - 2px + ${$days - 1}px)`};
+  ${({ $height }) => `height: ${$height}px; font-size: ${$height + 2}px;`};
   top: ${({ $index }) => `${$index}em`};
   align-items: center;
   padding: 0 10px 0 8px;
@@ -15,9 +14,6 @@ export const EventBarWrapper = styled.div<{ $days: number; $index: number; $colo
   z-index: 10;
   background-color: ${({ $color, theme }) => ($color ? $color : theme.color.system.primary)};
   color: ${({ theme }) => theme.color.white[100]};
-  :not(:last-of-type) {
-    margin-bottom: 2px;
-  }
 `;
 
 export const EventTitle = styled.span`

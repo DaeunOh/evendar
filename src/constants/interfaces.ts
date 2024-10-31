@@ -22,17 +22,17 @@ export interface CalendarProps {
   height?: string | number;
   firstDay?: WeekdayNumbers;
   order?: (keyof EventInput | `-${keyof EventInput}`)[];
+  eventHeight?: number;
+  maxEvents?: number;
 }
 
 export interface HeaderProps {
   firstDay?: WeekdayNumbers;
 }
 
-export interface DayCellProps
-  extends Pick<
-    CalendarProps,
-    'month' | 'events' | 'onDateClick' | 'onDateDblClick' | 'onEventClick' | 'onEventDblClick'
-  > {
+export interface DayCellProps extends Omit<CalendarProps, 'width' | 'height' | 'firstDay' | 'order'> {
   date: DateTime;
   index: number;
+  eventHeight: number;
+  maxEvents: number;
 }

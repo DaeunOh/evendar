@@ -13,6 +13,8 @@ const DayCell = ({
   onEventClick,
   onEventDblClick,
   index,
+  eventHeight,
+  maxEvents,
 }: DayCellProps) => {
   const { onClick, onDoubleClick } = useDoubleClick({ onClick: onDateClick, onDoubleClick: onDateDblClick });
 
@@ -29,6 +31,8 @@ const DayCell = ({
         index={index}
         onEventClick={onEventClick}
         onEventDblClick={onEventDblClick}
+        eventHeight={eventHeight}
+        maxEvents={maxEvents}
       />
     </S.DayCellContainer>
   );
