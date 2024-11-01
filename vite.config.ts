@@ -9,6 +9,7 @@ export default defineConfig({
       { find: '@components', replacement: '/src/components' },
       { find: '@constants', replacement: '/src/constants' },
       { find: '@hooks', replacement: '/src/hooks' },
+      { find: '@assets', replacement: '/src/assets' },
     ],
   },
   cacheDir: './.vite',
