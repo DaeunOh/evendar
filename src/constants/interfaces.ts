@@ -36,3 +36,20 @@ export interface DayCellProps extends Omit<CalendarProps, 'width' | 'height' | '
   eventHeight: number;
   maxEvents: number;
 }
+
+export interface ToolbarTitleProps {
+  date: DateTime;
+}
+
+export interface IconProps {
+  className?: string;
+  width?: number;
+  height?: number;
+  color?: string;
+}
+
+export interface ViewSelectProps<T> {
+  defaultValue: T;
+  items: { label: string; value: T }[];
+  onChange?: (cur: T) => unknown;
+}

@@ -44,6 +44,7 @@ declare module '@emotion/react' {
       };
       l: {
         bold: string;
+        medium: string;
         regular: string;
       };
       m: {

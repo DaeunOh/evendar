@@ -55,6 +55,7 @@ export const lightTheme = {
     },
     l: {
       bold: 'font-size:16px;font-weight:700;line-height:20px',
+      medium: 'font-size:16px;font-weight:500;line-height:20px',
       regular: 'font-size:16px;font-weight:400;line-height:20px',
     },
     m: {
