@@ -24,6 +24,7 @@ export interface CalendarProps {
   order?: (keyof EventInput | `-${keyof EventInput}`)[];
   eventHeight?: number;
   maxEvents?: number;
+  moreButton?: (num: number) => string | JSX.Element;
 }
 
 export interface HeaderProps {

@@ -14,6 +14,7 @@ const MonthlyCalendar = ({
   order = ['-allDay', 'start'],
   eventHeight = 22,
   maxEvents,
+  moreButton,
 }: CalendarProps) => {
   const [splitedEventMap, setSplitedEventMap] = useState<Map<string, EventInput[]>>(new Map());
   const [maxEventCount, setMaxEventCount] = useState(maxEvents ?? 0);
@@ -57,11 +58,15 @@ const MonthlyCalendar = ({
       return desc ? 1 : -1;
     };
 
+  // TODO: dynamically calculate based on the heights of each component.
   const handleResize = () => {
     if (maxEvents !== undefined || !rowRef.current) return;
     const headerHeight = 44;
     const eventMarginBottom = 2;
-    const count = Math.floor((rowRef.current.offsetHeight - headerHeight) / (eventHeight + eventMarginBottom));
+    const moreButtonHeight = 32;
+    const count = Math.floor(
+      (rowRef.current.offsetHeight - headerHeight - moreButtonHeight) / (eventHeight + eventMarginBottom),
+    );
     setMaxEventCount(Math.max(0, count));
   };
 
@@ -110,6 +115,7 @@ const MonthlyCalendar = ({
                 index={index}
                 eventHeight={eventHeight}
                 maxEvents={maxEventCount}
+                moreButton={moreButton}
               />
             ))}
           </S.DayCellRow>
