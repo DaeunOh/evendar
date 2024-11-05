@@ -1,11 +1,11 @@
 import { ThemeProvider } from '@emotion/react';
 import { lightTheme } from '@constants/theme';
-import { MonthlyCalendar } from '@components/Monthly';
+import Evendar from '@components/Evendar';
 
 function App() {
   return (
     <ThemeProvider theme={lightTheme}>
-      <MonthlyCalendar />
+      <Evendar />
     </ThemeProvider>
   );
 }
