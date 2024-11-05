@@ -1,8 +1,8 @@
-import React from 'react';
 import { useDoubleClick } from '@hooks';
 import { DayCellProps } from '@constants/interfaces';
 import DayCellHeader from './DayCellHeader';
 import DayCellContent from './DayCellContent';
+import { MoreButton } from '@components/MoreButton';
 import * as S from './DayCell.style';
 
 const DayCell = ({
@@ -16,21 +16,11 @@ const DayCell = ({
   index,
   eventHeight,
   maxEvents,
-  moreButton,
+  moreButtonContent,
+  onMoreButtonClick,
 }: DayCellProps) => {
   const { onClick, onDoubleClick } = useDoubleClick({ onClick: onDateClick, onDoubleClick: onDateDblClick });
   const moreButtonNum = events.length - maxEvents;
-  const moreButtonContent = moreButton?.(moreButtonNum);
-
-  const MoreButton = () => {
-    const className = 'evd-more-button';
-    if (!moreButtonContent) return <S.MoreButton className={className}>{`+ ${moreButtonNum}`}</S.MoreButton>;
-    return typeof moreButtonContent === 'string' ? (
-      <S.MoreButton className={className}>{moreButtonContent}</S.MoreButton>
-    ) : (
-      React.cloneElement(moreButtonContent, { className })
-    );
-  };
 
   return (
     <S.DayCellContainer
@@ -48,7 +38,15 @@ const DayCell = ({
         eventHeight={eventHeight}
         maxEvents={maxEvents}
       />
-      {moreButtonNum > 0 && <MoreButton />}
+      {moreButtonNum > 0 && (
+        <MoreButton
+          date={date}
+          events={events}
+          moreButtonContent={moreButtonContent}
+          onClick={onMoreButtonClick}
+          num={moreButtonNum}
+        />
+      )}
     </S.DayCellContainer>
   );
 };

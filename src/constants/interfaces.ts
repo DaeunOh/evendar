@@ -11,6 +11,11 @@ export interface EventInput {
   color?: string;
 }
 
+export interface MoreButtonParams {
+  date: Date;
+  jsEvent: MouseEvent;
+}
+
 export interface CalendarProps {
   month?: MonthNumbers;
   events: EventInput[];
@@ -24,7 +29,8 @@ export interface CalendarProps {
   order?: (keyof EventInput | `-${keyof EventInput}`)[];
   eventHeight?: number;
   maxEvents?: number;
-  moreButton?: (num: number) => string | JSX.Element;
+  moreButtonContent?: (num: number) => string | JSX.Element;
+  onMoreButtonClick?: (params: MoreButtonParams) => void;
 }
 
 export interface HeaderProps {

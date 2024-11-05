@@ -14,7 +14,8 @@ const MonthlyCalendar = ({
   order = ['-allDay', 'start'],
   eventHeight = 22,
   maxEvents,
-  moreButton,
+  moreButtonContent,
+  onMoreButtonClick,
 }: CalendarProps) => {
   const [splitedEventMap, setSplitedEventMap] = useState<Map<string, EventInput[]>>(new Map());
   const [maxEventCount, setMaxEventCount] = useState(maxEvents ?? 0);
@@ -115,7 +116,8 @@ const MonthlyCalendar = ({
                 index={index}
                 eventHeight={eventHeight}
                 maxEvents={maxEventCount}
-                moreButton={moreButton}
+                moreButtonContent={moreButtonContent}
+                onMoreButtonClick={onMoreButtonClick}
               />
             ))}
           </S.DayCellRow>
