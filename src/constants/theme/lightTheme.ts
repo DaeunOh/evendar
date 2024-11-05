@@ -1,4 +1,6 @@
-export const lightTheme = {
+import { EvendarTheme } from './theme';
+
+export const lightTheme: EvendarTheme = {
   color: {
     system: {
       primary: '#B5D692',
