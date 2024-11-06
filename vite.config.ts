@@ -10,6 +10,8 @@ export default defineConfig({
       { find: '@constants', replacement: '/src/constants' },
       { find: '@hooks', replacement: '/src/hooks' },
       { find: '@assets', replacement: '/src/assets' },
+      { find: '@utils', replacement: '/src/utils' },
+      { find: '@models', replacement: '/src/models' },
     ],
   },
   cacheDir: './.vite',

@@ -3,6 +3,8 @@ import { DateTime, MonthNumbers, WeekdayNumbers } from 'luxon';
 
 export type ViewMode = 'month' | 'week' | 'day';
 
+export type DateLike = string | Date;
+
 export interface EventInput {
   title: string;
   start: string;
