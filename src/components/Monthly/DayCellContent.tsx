@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon';
 import { useDoubleClick } from '@hooks';
 import { DayCellProps } from '@constants/interfaces';
 import EventBar from './EventBar';
@@ -20,7 +19,7 @@ const DayCellContent = ({
       {events
         .slice(0, maxEvents)
         .map((event, eventIndex) =>
-          DateTime.fromISO(event?.start).hasSame(date, 'day') || index === 0 ? (
+          event.startDate.hasSame(date, 'day') || index === 0 ? (
             <EventBar
               key={`${date.toISODate()}-${eventIndex}`}
               date={date}

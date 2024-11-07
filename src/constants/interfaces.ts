@@ -1,5 +1,6 @@
 import { MouseEvent } from 'react';
 import { DateTime, MonthNumbers, WeekdayNumbers } from 'luxon';
+import { EventModel } from '@models';
 
 export type ViewMode = 'month' | 'week' | 'day';
 
@@ -7,8 +8,8 @@ export type DateLike = string | Date;
 
 export interface EventInput {
   title: string;
-  start: string;
-  end: string;
+  start: DateLike;
+  end: DateLike;
   allDay?: boolean;
   color?: string;
 }
@@ -20,7 +21,7 @@ export interface MoreButtonParams {
 
 export interface CalendarProps {
   month?: MonthNumbers;
-  events: EventInput[];
+  events: EventModel[];
   onDateClick?: ({ jsEvent }: { jsEvent: MouseEvent }) => void;
   onDateDblClick?: ({ jsEvent }: { jsEvent: MouseEvent }) => void;
   onEventClick?: ({ jsEvent }: { jsEvent: MouseEvent }) => void;
