@@ -19,7 +19,7 @@ const DayCellContent = ({
       {events
         .slice(0, maxEvents)
         .map((event, eventIndex) =>
-          event.startDate.hasSame(date, 'day') || index === 0 ? (
+          event && (event.startDate.hasSame(date, 'day') || index === 0) ? (
             <EventBar
               key={`${date.toISODate()}-${eventIndex}`}
               date={date}

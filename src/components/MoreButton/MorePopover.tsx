@@ -26,9 +26,7 @@ const MorePopover = ({ open, anchorEl, onClose, date, events }: Props) => {
     >
       <S.PopoverHeader>{date.toFormat('LL/dd (cccc)')}</S.PopoverHeader>
       <S.PopoverContent>
-        {events.map(event => (
-          <S.EventBar $color={event.color}>{event.title}</S.EventBar>
-        ))}
+        {events.map(event => event && <S.EventBar $color={event.color}>{event.title}</S.EventBar>)}
       </S.PopoverContent>
     </Popover>
   );
