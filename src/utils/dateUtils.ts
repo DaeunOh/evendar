@@ -42,14 +42,14 @@ export const sortByOrder = (eventMap: Map<string, EventModel[]>, order: string[]
     : new Map(Array.from(eventMap.entries()).map(([key, value]) => [key, value.sort(compareOrder(0, order))]));
 };
 
-const compareOrder =
+export const compareOrder =
   (index: number, order: string[]) =>
   (a: EventModel, b: EventModel): number => {
     const desc = order[index].startsWith('-');
     const key = order[index].replace('-', '');
     const aValue = getComparableValue(a.getData(key));
     const bValue = getComparableValue(b.getData(key));
-    if (aValue === bValue) return order[index + 1] ? compareOrder(index + 1, order)(a, b) : 0;
+    if (isEqualValue(aValue, bValue)) return order[index + 1] ? compareOrder(index + 1, order)(a, b) : 0;
     if (aValue == null) return 1;
     if (bValue == null) return -1;
     if (aValue > bValue) return desc ? -1 : 1;
@@ -59,4 +59,9 @@ const compareOrder =
 const getComparableValue = <T>(value: T): T | DateTime<true> => {
   const date = DateTime.fromISO(`${value}`);
   return date.isValid ? date : value;
+};
+
+const isEqualValue = (a: unknown, b: unknown): boolean => {
+  if (a instanceof DateTime && b instanceof DateTime) return a.equals(b);
+  return a === b;
 };
