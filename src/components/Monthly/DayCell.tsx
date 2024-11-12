@@ -20,7 +20,7 @@ const DayCell = ({
   onMoreButtonClick,
 }: DayCellProps) => {
   const { onClick, onDoubleClick } = useDoubleClick({ onClick: onDateClick, onDoubleClick: onDateDblClick });
-  const moreButtonNum = events.length - maxEvents;
+  const moreButtonNum = events.filter(event => event).length - maxEvents;
 
   return (
     <S.DayCellContainer
