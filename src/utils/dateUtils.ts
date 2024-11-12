@@ -26,22 +26,6 @@ export const sortByDate = (events: EventModel[]) => {
   return events.sort((a, b) => a.startDate.toMillis() - b.startDate.toMillis());
 };
 
-export const groupByDate = (events: EventModel[]) => {
-  const eventMap = new Map<string, EventModel[]>();
-  events.forEach(event => {
-    const date = event.startDate.toISODate();
-    if (!date) return;
-    eventMap.set(date, eventMap.has(date) ? [...eventMap.get(date)!, event] : [event]);
-  });
-  return eventMap;
-};
-
-export const sortByOrder = (eventMap: Map<string, EventModel[]>, order: string[]) => {
-  return !order.length
-    ? eventMap
-    : new Map(Array.from(eventMap.entries()).map(([key, value]) => [key, value.sort(compareOrder(0, order))]));
-};
-
 export const compareOrder =
   (index: number, order: string[]) =>
   (a: EventModel, b: EventModel): number => {

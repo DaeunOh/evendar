@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { DateTime, Interval } from 'luxon';
 import { CalendarProps } from '@constants/interfaces';
 import { EventModel } from '@models';
-import { filterByDateRange, sortByDate, groupByDate, sortByOrder } from '@utils';
+import { filterByDateRange, sortByDate, compareOrder, fillStartWithValue, getFillIndex } from '@utils';
 import { CalendarHeader } from '@components/Header';
 import DayCell from './DayCell';
 import * as S from './MonthlyCalendar.style';
@@ -19,13 +19,22 @@ const MonthlyCalendar = ({
   moreButtonContent,
   onMoreButtonClick,
 }: CalendarProps) => {
-  const [splitedEventMap, setSplitedEventMap] = useState<Map<string, EventModel[]>>(new Map());
+  const [splitedEventMap, setSplitedEventMap] = useState<Map<string, (EventModel | undefined)[]>>(new Map());
   const [maxEventCount, setMaxEventCount] = useState(maxEvents ?? 0);
   const rowRef = useRef<HTMLDivElement>(null);
   const startOfMonth = DateTime.fromObject({ month }) as DateTime<true>;
   const startOfMonthView =
     startOfMonth.weekday === firstDay ? startOfMonth : startOfMonth.set({ weekday: firstDay }).minus({ weeks: 1 });
   const daysOfMonthView = Array.from({ length: 42 }, (_, i) => startOfMonthView.plus({ days: i }));
+
+  const groupByWeek = (events: EventModel[]) => {
+    return Array.from({ length: 6 }).map((_, index) => {
+      const startOfWeek = startOfMonthView.plus({ days: index * 7 });
+      const endOfWeek = startOfWeek.plus({ days: 6 });
+      const sameWeekEvents = filterByDateRange(events, startOfWeek, endOfWeek);
+      return order ? sameWeekEvents.sort(compareOrder(0, order)) : sameWeekEvents;
+    });
+  };
 
   // TODO: dynamically calculate based on the heights of each component.
   const handleResize = () => {
@@ -40,29 +49,45 @@ const MonthlyCalendar = ({
   };
 
   useEffect(() => {
-    const filterdEventsByMonth = filterByDateRange(
+    const filteredByMonthView = filterByDateRange(
       monthlyEvents,
       daysOfMonthView[0],
       daysOfMonthView[daysOfMonthView.length - 1],
     );
-    const sortedByDate = sortByDate(filterdEventsByMonth);
-    const groupedMapByDate = groupByDate(sortedByDate);
-    const sortedMapByOrder = sortByOrder(groupedMapByDate, order);
-    Array.from(sortedMapByOrder.values()).forEach(events => {
-      events.forEach((event, index) => {
+    const sortedByDate = sortByDate(filteredByMonthView);
+    const eventsByWeek = groupByWeek(sortedByDate);
+
+    const groupedMapByDate = new Map<string, (EventModel | undefined)[]>();
+    eventsByWeek.forEach((events, weekIndex) => {
+      events.forEach(event => {
         const days = Interval.fromDateTimes(event.startDate, event.endDate).count('days');
-        if (days < 2) return;
-        Array.from({ length: days - 1 }).forEach((_, i) => {
-          const start = event.startDate.plus({ days: i + 1 }).toISODate();
-          if (!start) return;
-          const target = sortedMapByOrder.get(start) ?? [];
-          const copied = target.length < index ? target.concat(Array(index).fill(null)).slice() : target.slice();
-          copied.splice(index, 0, event);
-          sortedMapByOrder.set(start, copied);
+        if (days < 2) {
+          // handle single day event
+          const start = event.startDate.toISODate()!;
+          const arr = groupedMapByDate.get(start) ?? [];
+          groupedMapByDate.set(start, fillStartWithValue(arr, event));
+          return;
+        }
+
+        const start = DateTime.max(event.startDate, startOfMonthView.plus({ days: weekIndex * 7 }));
+        const end = DateTime.min(event.endDate, startOfMonthView.plus({ days: weekIndex * 7 + 6 }).endOf('day'));
+        const daysArr = Array.from({ length: Interval.fromDateTimes(start, end).count('days') });
+
+        const maxIndex = daysArr.reduce<number>((acc, _, index) => {
+          const date = start.plus({ days: index }).toISODate()!;
+          const arr = groupedMapByDate.get(date) ?? [];
+          return Math.max(acc, getFillIndex(arr));
+        }, 0);
+
+        daysArr.forEach((_, index) => {
+          const date = start.plus({ days: index }).toISODate()!;
+          const arr = [...(groupedMapByDate.get(date) ?? [])];
+          arr[maxIndex] = event;
+          groupedMapByDate.set(date, arr);
         });
       });
     });
-    setSplitedEventMap(sortedMapByOrder);
+    setSplitedEventMap(groupedMapByDate);
   }, [monthlyEvents]);
 
   useEffect(() => {
