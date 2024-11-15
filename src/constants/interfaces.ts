@@ -12,6 +12,7 @@ export interface EventInput {
   end: DateLike;
   allDay?: boolean;
   color?: string;
+  [key: string]: unknown;
 }
 
 export interface MoreButtonParams {
@@ -29,7 +30,7 @@ export interface CalendarProps {
   width?: string | number;
   height?: string | number;
   firstDay?: WeekdayNumbers;
-  order?: (keyof EventInput | `-${keyof EventInput}`)[];
+  order?: string[];
   eventHeight?: number;
   maxEvents?: number;
   moreButtonContent?: (num: number) => string | JSX.Element;
@@ -40,7 +41,8 @@ export interface HeaderProps {
   firstDay?: WeekdayNumbers;
 }
 
-export interface DayCellProps extends Omit<CalendarProps, 'width' | 'height' | 'firstDay' | 'order'> {
+export interface DayCellProps extends Omit<CalendarProps, 'events' | 'width' | 'height' | 'firstDay' | 'order'> {
+  events: (EventModel | undefined)[];
   date: DateTime;
   index: number;
   eventHeight: number;
