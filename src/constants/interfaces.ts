@@ -21,7 +21,9 @@ export interface MoreButtonParams {
 }
 
 export interface CalendarProps {
+  initialDate?: DateTime;
   month?: MonthNumbers;
+  duration?: DurationObject;
   events: EventModel[];
   onDateClick?: ({ jsEvent }: { jsEvent: MouseEvent }) => void;
   onDateDblClick?: ({ jsEvent }: { jsEvent: MouseEvent }) => void;
@@ -38,7 +40,10 @@ export interface CalendarProps {
 }
 
 export interface HeaderProps {
+  initialDate?: DateTime;
   firstDay?: WeekdayNumbers;
+  viewMode?: ViewMode;
+  duration?: DurationObject;
 }
 
 export interface DayCellProps extends Omit<CalendarProps, 'events' | 'width' | 'height' | 'firstDay' | 'order'> {
@@ -64,4 +69,24 @@ export interface ViewSelectProps<T> {
   defaultValue: T;
   items: { label: string; value: T }[];
   onChange?: (cur: T) => unknown;
+}
+
+export interface DurationObject {
+  years?: number;
+  year?: number;
+  months?: number;
+  month?: number;
+  weeks?: number;
+  week?: number;
+  days?: number;
+  day?: number;
+  hours?: number;
+  hour?: number;
+  minutes?: number;
+  minute?: number;
+  seconds?: number;
+  second?: number;
+  milliseconds?: number;
+  millisecond?: number;
+  ms?: number;
 }

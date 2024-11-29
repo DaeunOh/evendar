@@ -5,8 +5,17 @@ import NextButton from './NextButton';
 import TodayButton from './TodayButton';
 import ViewSelect from './ViewSelect';
 import * as S from './HeaderToolbar.style';
+import { ViewMode } from '@constants/interfaces';
 
-const HeaderToolbar = () => {
+interface Props {
+  onViewModeChange?: (mode: ViewMode) => void;
+}
+
+const HeaderToolbar = ({ onViewModeChange }: Props) => {
+  const handleViewModeChange = (mode: ViewMode) => {
+    onViewModeChange?.(mode);
+  };
+
   return (
     <S.HeaderToolbarContainer className="evd-header-toolbar">
       <S.LeftSideWrapper>
@@ -17,10 +26,11 @@ const HeaderToolbar = () => {
       </S.LeftSideWrapper>
       <S.RightSideWrapper>
         <ViewSelect
-          defaultValue="Month"
+          defaultValue="month"
+          onChange={handleViewModeChange}
           items={[
-            { label: 'Month', value: 'Month' },
-            { label: 'Week', value: 'Week' },
+            { label: 'Month', value: 'month' },
+            { label: 'Week', value: 'week' },
           ]}
         />
       </S.RightSideWrapper>
